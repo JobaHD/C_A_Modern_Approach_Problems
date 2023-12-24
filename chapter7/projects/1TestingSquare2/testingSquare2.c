@@ -9,7 +9,7 @@ int main(void) {
   scanf("%d", &limit);
 
   for (int i = 1; i <= limit; i++) {
-    printf("%10d%10d\n", i, i * i);
+    printf("%d\t%d\n", i, i * i);
   }
 
   return 0;

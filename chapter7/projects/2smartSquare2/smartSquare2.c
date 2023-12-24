@@ -1,4 +1,4 @@
-/* Prints a table of squares using a for statement */
+/* Prints a table of squares, stopping every 24 instances to ask for user input */
 #include <stdio.h>
 
 int main(void) {
@@ -8,8 +8,13 @@ int main(void) {
   printf("Enter the number of entries of in the table: \n");
   scanf("%d", &limit);
 
+  getchar();
   for (int i = 1; i <= limit; i++) {
-    printf("%10d%10d\n", i, i * i);
+    printf("%d\t%d\n", i, i * i);
+    if (i % 24 == 0) {
+        printf("Press Enter to continue... ");
+        getchar();
+    }
   }
 
   return 0;
