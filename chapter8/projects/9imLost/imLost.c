@@ -9,7 +9,7 @@ int main(void) {
   int lastCol = 0;
   int lastRow = 0;
   char currChar = 'A';
-  int direction;
+  int direction = -1;
   int up, down, left, right;
   up = down = left = right = 0;
 
@@ -29,15 +29,12 @@ int main(void) {
   // Start off with A at [0][0]
   arr[lastCol][lastRow] = currChar++;
   while (currChar <= 'Z') {
-    printf("Current character: %c\n", currChar);
-    printf("Loop condition: %d\n", currChar <= 0);
-    printf("Direction: %d\n", direction);
-    printf("LastCol: %d\n", lastCol);
-    printf("LastRow: %d\n", lastRow);
+    up = down = left = right = 0;
 
     if (lastCol + 1 < SIZE && arr[lastRow][lastCol + 1] == '.') {
       down = 1;
-    } if (lastRow + 1 < SIZE && arr[lastRow + 1][lastCol] == '.') {
+    }
+    if (lastRow + 1 < SIZE && arr[lastRow + 1][lastCol] == '.') {
       right = 1;
     }
     if (lastCol - 1 > 0 && arr[lastRow][lastCol - 1] == '.') {
@@ -53,6 +50,10 @@ int main(void) {
 
     direction = rand() % 4;
 
+    // if direction not available, redo loop for randomizer
+    // Only other way I can think is a fall through but that would be more
+    // predictable and defeat the purpose of random
+    // P.S. This took a whole day, fuck it
     switch (direction) {
     case 0:
       if (down) {
@@ -77,6 +78,8 @@ int main(void) {
         lastRow--;
         break;
       }
+      continue;
+    default:
       continue;
     }
     arr[lastRow][lastCol] = currChar;
