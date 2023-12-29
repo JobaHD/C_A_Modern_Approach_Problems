@@ -1,6 +1,5 @@
 /* Find closest departure time and output flight */
 #include <stdio.h>
-#include <wchar.h>
 #define LENGTH 8
 
 int main(void) {
@@ -15,6 +14,7 @@ int main(void) {
       (7 + 12) * 60,
       (9 + 12) * 60 + 45,
   };
+
   int arrivals[LENGTH] = {
       10 * 60 + 16,
       11 * 60 + 52,
@@ -30,23 +30,26 @@ int main(void) {
   scanf("%d:%d", &inputHour, &inputMin);
   inputTotalMin = inputHour * 60 + inputMin;
 
-  // will breka with 9
+  // will break with 9
   int i = 0;
-  while (i < LENGTH) {
+  while (i < LENGTH-1) {
     if (inputTotalMin <=
         departures[i] + (departures[i + 1] - departures[i]) / 2) {
       break;
+    } else {
+      i++;
     }
-    i++;
   }
 
-  int departureMin = departures[i] % 60;
-  char departureMeridian = departures[i] / 60 > 12 ? 'P' : 'A';
-  int departureHour12 =
-      departures[i] / 60 % 12 == 0 ? 12 : departures[i] / 60 % 12;
+  printf("Index: %d\n", i);
 
+  int departureMin = departures[i] % 60;
+  char departureMeridian = departures[i] / 60 >= 12 ? 'P' : 'A';
+  int departureHour12 = departures[i] / 60 % 12 == 0 ? 12 : departures[i] / 60 % 12;
+
+  //bug in the making, watch out for times with 0 hours.
   int arrivalMin = arrivals[i] % 60;
-  char arrivalMeridian = arrivals[i] / 60 > 12 ? 'P' : 'A';
+  char arrivalMeridian = arrivals[i] / 60 >= 12 ? 'P' : 'A';
   int arrivalHour12 = arrivals[i] / 60 % 12 == 0 ? 12 : arrivals[i] / 60 % 12;
 
   printf("%.2d:%.2d %cM, arriving at %.2d:%.2d %cM", departureHour12,
