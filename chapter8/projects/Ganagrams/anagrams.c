@@ -1,6 +1,6 @@
 #include <ctype.h>
 #include <stdio.h>
-#define MAX 26
+#define MAX 27
 
 int main(void) {
   char ch;
