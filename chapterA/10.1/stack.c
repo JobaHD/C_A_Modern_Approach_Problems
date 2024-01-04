@@ -25,7 +25,7 @@ void push(int i) {
     }
 }
 
-int pop(int i) {
+int pop() {
     if (isEmpty()) {
         stackUnderflow();
     } else {

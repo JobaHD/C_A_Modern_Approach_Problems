@@ -38,19 +38,19 @@ void chooseNewSecretNum(void) { secretNumber = rand() % MAX_NUMBER + 1; }
  * games stats.
  */
 void readGuesses(void) {
-    int guess, numGuesses = 0;
+  int guess, numGuesses = 0;
 
-    for(;;) {
-        numGuesses++;
-        printf("Enter a guess: ");
-        scanf("%d", &guess);
-        if (guess == secretNumber) {
-            printf("You won in %d guesses!\n\n", numGuesses);
-            return;
-        } else if (guess < secretNumber) {
-            printf("Too low; try again.\n");
-        } else {
-            printf("Too high; try again.\n");
-        }
+  for (;;) {
+    numGuesses++;
+    printf("Enter a guess: ");
+    scanf("%d", &guess);
+    if (guess == secretNumber) {
+      printf("You won in %d guesses!\n\n", numGuesses);
+      return;
+    } else if (guess < secretNumber) {
+      printf("Too low; try again.\n");
+    } else {
+      printf("Too high; try again.\n");
     }
+  }
 }
