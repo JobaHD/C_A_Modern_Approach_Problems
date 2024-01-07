@@ -1,3 +1,6 @@
+/* Modified poker.c to recognize ace-low straights.
+ */
+
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -11,7 +14,7 @@
 /* numInRank[r] represents the number of cards with rank r*/
 int numInRank[NUM_RANKS] = {0};
 /* numInSuit[s] represents the number of cards with suit s*/
-int numInSuit[NUM_CARDS] = {0};
+int numInSuit[NUM_SUITS] = {0};
 bool straight, flush, four, three;
 int pairs; /* can be 0, 1 , or 2 */
 
@@ -19,6 +22,10 @@ int pairs; /* can be 0, 1 , or 2 */
 void readCards(void);
 void analyzeHand(void);
 void printResult(void);
+int getSuitNum(char suitCh);
+int getRankNum(char rankCh);
+void dumpSuits();
+void dumpRanks();
 
 /* main: Calls readCards, analyzeHand, and printResult repeatedly
  */
@@ -58,33 +65,12 @@ void readCards(void) {
     printf("Enter a card: ");
 
     rankCh = toupper(getchar());
-    switch (rankCh) {
-    case '0':
-      exit(EXIT_SUCCESS);
-    case '2': rank = 0; break;
-    case '3': rank = 1; break;
-    case '4': rank = 2; break;
-    case '5': rank = 3; break;
-    case '6': rank = 4; break;
-    case '7': rank = 5; break;
-    case '8': rank = 6; break;
-    case '9': rank = 7; break;
-    case 'T': rank = 8; break;
-    case 'J': rank = 9; break;
-    case 'Q': rank = 10; break;
-    case 'K': rank = 11; break;
-    case 'A': rank = 12; break;
-    default:
+    if ((rank = getRankNum(rankCh)) == -1) {
       badCard = true;
     }
 
     suitCh = toupper(getchar());
-    switch (suitCh) {
-    case 'C': suit = 0; break;
-    case 'D': suit = 1; break;
-    case 'H': suit = 2; break;
-    case 'S': suit = 3; break;
-    default:
+    if ((suit = getSuitNum(suitCh)) == -1) {
       badCard = true;
     }
 
@@ -130,18 +116,31 @@ void analyzeHand(void) {
   rank = 0;
   while (numInRank[rank] == 0)
     rank++;
-  for (; rank < NUM_RANKS && numInRank[rank] > 0; rank++)
+
+  /* Edge-case: ace-low straight
+   * increases numConsec if the straight starts at 2, and there's an aice */
+  if (rank == 0 && numInRank[NUM_RANKS - 1] == 1) {
     numConsec++;
+  }
+
+  for (; rank < NUM_RANKS && numInRank[rank] == 1; rank++)
+    numConsec++;
+  printf("NumConsec: %d\n", numConsec);
+
   if (numConsec == NUM_CARDS) {
     straight = true;
     return;
   }
 
+  dumpRanks();
   /* check for 4-of-a-kind, 3-of-a-kind, and pairs */
   for (rank = 0; rank < NUM_RANKS; rank++) {
-    if (numInRank[rank] == 4) four = true;
-    if (numInRank[rank] == 3) three = true;
-    if (numInRank[rank] == 2) pairs++;
+    if (numInRank[rank] == 4)
+      four = true;
+    if (numInRank[rank] == 3)
+      three = true;
+    if (numInRank[rank] == 2)
+      pairs++;
   }
 }
 
@@ -149,14 +148,103 @@ void analyzeHand(void) {
  * analyzeHand.
  */
 void printResult(void) {
-  if (straight && flush) printf("Straight flush");
-  else if (four) printf("Four of a kind");
-  else if (three && pairs == 1) printf("Full House");
-  else if (flush) printf("Flush");
-  else if (straight) printf("Straight");
-  else if (pairs == 2) printf("Two pairs");
-  else if (pairs == 1) printf("Pair");
-  else printf("High Card");
+  if (straight && flush)
+    printf("Straight flush");
+  else if (four)
+    printf("Four of a kind");
+  else if (three && pairs == 1)
+    printf("Full House");
+  else if (flush)
+    printf("Flush");
+  else if (straight)
+    printf("Straight");
+  else if (pairs == 2)
+    printf("Two pairs");
+  else if (pairs == 1)
+    printf("Pair");
+  else
+    printf("High Card");
 
   printf("\n\n");
+}
+
+void dumpSuits() {
+  printf("Suits: ");
+  for (int i = 0; i < NUM_SUITS; i++) {
+    printf("Index: %d, content: %d", i, numInSuit[i]);
+  }
+}
+
+void dumpRanks() {
+  printf("Ranks: \n");
+  for (int i = 0; i < NUM_RANKS; i++) {
+    printf("Index: %d, content: %d\n", i, numInRank[i]);
+  }
+}
+
+int getRankNum(char rankCh) {
+  int rank = -1;
+  switch (rankCh) {
+  case '0':
+    exit(EXIT_SUCCESS);
+  case '2':
+    rank = 0;
+    break;
+  case '3':
+    rank = 1;
+    break;
+  case '4':
+    rank = 2;
+    break;
+  case '5':
+    rank = 3;
+    break;
+  case '6':
+    rank = 4;
+    break;
+  case '7':
+    rank = 5;
+    break;
+  case '8':
+    rank = 6;
+    break;
+  case '9':
+    rank = 7;
+    break;
+  case 'T':
+    rank = 8;
+    break;
+  case 'J':
+    rank = 9;
+    break;
+  case 'Q':
+    rank = 10;
+    break;
+  case 'K':
+    rank = 11;
+    break;
+  case 'A':
+    rank = 12;
+    break;
+  }
+  return rank;
+}
+
+int getSuitNum(char suitCh) {
+  int suit = -1;
+  switch (suitCh) {
+  case 'C':
+    suit = 0;
+    break;
+  case 'D':
+    suit = 1;
+    break;
+  case 'H':
+    suit = 2;
+    break;
+  case 'S':
+    suit = 3;
+    break;
+  }
+  return suit;
 }

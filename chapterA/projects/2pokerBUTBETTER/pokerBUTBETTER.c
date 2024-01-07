@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <wchar.h>
 
 #define NUM_RANKS 13
 #define NUM_SUITS 4
@@ -23,7 +22,7 @@ int main(void) {
 /* numInRank[r] represents the number of cards with rank r*/
 int numInRank[NUM_RANKS] = {0};
 /* numInSuit[s] represents the number of cards with suit s*/
-int numInSuit[NUM_CARDS] = {0};
+int numInSuit[NUM_SUITS] = {0};
 
   for (;;) {
     readCards(numInRank, numInSuit);
@@ -75,8 +74,7 @@ void readCards(int numInRank[], int numInSuit[]) {
     case 'D': suit = 1; break;
     case 'H': suit = 2; break;
     case 'S': suit = 3; break;
-    default:
-      badCard = true;
+    default: badCard = true;
     }
 
     while ((ch = getchar()) != '\n') {
@@ -96,6 +94,8 @@ void readCards(int numInRank[], int numInSuit[]) {
       cardsRead++;
     }
   }
+  printf("Reached end of readCards\n");
+
 }
 
 /* analyzeHand: Determine hand combination and stores the result into
