@@ -7,19 +7,30 @@
 const int segments[10][7] = {
     {1, 1, 1, 1, 1, 1, 0}, // 0
     {0, 1, 1, 0, 0, 0, 0}, // 1
-    {1, 1, 0, 1, 1, 0, 1}, // ...
-    {1, 1, 1, 1, 0, 0, 0}, {0, 1, 1, 0, 0, 1, 1}, {1, 0, 1, 1, 0, 1, 0},
-    {1, 0, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 0, 0, 0}, {1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 0, 1, 1},
+    {1, 1, 0, 1, 1, 0, 1}, // 2
+    {1, 1, 1, 1, 0, 0, 1}, // 3
+    {0, 1, 1, 0, 0, 1, 1}, // 4
+    {1, 0, 1, 1, 0, 1, 1}, // 5
+    {1, 0, 1, 1, 1, 1, 1}, // 6
+    {1, 1, 1, 0, 0, 0, 0}, // 7
+    {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 0, 1, 1},
 };
+
+const int encoding[3][3] = {{-1, 0, -1},
+                            { 5, 6, 1, },
+                            {4, 3, 2}};
 
 /* A digit take up 4 units vertically, 3 units horizontal plus a space so 4
  * units. Which is multiplied by MAX_DIGITS b/c the digits are display
- * horizontallyy _ _ _ SPACE _ _ _ _ _ _ SPACE _ _ _ _ _ _ SPACE _ _ _ _ _ _
- * SPACE _ _ _
+ * horizontally
+ * _ 0 _ SPACE _ _ _
+ * 5 6 1 SPACE _ _ _
+ * 4 3 2 SPACE _ _ _
  */
+
 int digits[4][4 * MAX_DIGITS] = {0};
 
+/* prototypes */
 void clearDigitsArr(void);
 void processDigits(int digit, int position);
 void printDigitsArr(void);
@@ -58,10 +69,20 @@ void printDigitsArr() {
 }
 
 void processDigits(int digit, int position) {
-    int counter = 0;
-  printf("Digits: %d\n", digit);
-  for (int i = 0; i < 4; i++) {
-    for (int k = position * 4; k < position + 4; k++) {
+  position *= 4;
+  char symbol = ' ';
+  for (int i = 0; i < 3; i++) {
+    for (int k = 0; k < 3; k++) {
+      symbol = encoding[i][k] % 3 == 0 ? '_' : '|';
+      // printf("Symbol: %c\n", symbol);
+      if (i == 0) {
+          // if not first or last position place symbol
+        digits[i][k + position] = (k % 2 != 0 && segments[digit][0]) ? symbol : ' ';
+      } else {
+        // printf("Encoding[i][k]: %d\n", encoding[i][k]);
+        digits[i][k + position] =
+            segments[digit][encoding[i][k]] ? symbol : ' ';
+      }
     }
   }
 }
