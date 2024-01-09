@@ -1,10 +1,11 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #define MAX_DIGITS 10
 
 /* external vars */
-const int segments[10][7] = {
+const bool segments[10][7] = {
     {1, 1, 1, 1, 1, 1, 0}, // 0
     {0, 1, 1, 0, 0, 0, 0}, // 1
     {1, 1, 0, 1, 1, 0, 1}, // 2
@@ -77,6 +78,7 @@ void processDigits(int digit, int position) {
       // printf("Symbol: %c\n", symbol);
       if (i == 0) {
           // if not first or last position place symbol
+          // Also must
         digits[i][k + position] = (k % 2 != 0 && segments[digit][0]) ? symbol : ' ';
       } else {
         // printf("Encoding[i][k]: %d\n", encoding[i][k]);
