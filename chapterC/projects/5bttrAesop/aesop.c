@@ -12,20 +12,20 @@ int main(void) {
     *p++ = finalChar;
   }
 
-  // add space after last letter, for helping the loop later break up words
-  //*p = ' ';
-
   char *lastCharIndex = p;
 
   for (; p >= sentence; p--) {
     if (*p == ' ' || p == sentence) {
-      for (char *q = p; q < lastCharIndex; q++) {
+        // will not omit one space if it's the last char.
+        int offset = p == sentence ? 0 : 1;
+      for (char *q = p + offset; q < lastCharIndex; q++) {
         putchar(*q);
       }
-      lastCharIndex = p;
-      putchar(*p--);
+      //decrease for space or first char in case of last word.
+      lastCharIndex = p--;
+      putchar(' ');
     }
   }
 
-  putchar(finalChar);
+  printf("\b%c\n", finalChar);
 }
